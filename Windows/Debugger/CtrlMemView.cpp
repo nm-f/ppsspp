@@ -39,7 +39,7 @@ CtrlMemView::CtrlMemView(HWND _wnd)
 		L"Lucida Console");
 	curAddress = 0;
 	debugger = 0;
- 
+
 	searchQuery = "";
 	matchAddress = -1;
 	searching = false;
@@ -67,7 +67,7 @@ CtrlMemView::~CtrlMemView()
 void CtrlMemView::init()
 {
     WNDCLASSEX wc;
-    
+
     wc.cbSize         = sizeof(wc);
     wc.lpszClassName  = szClassName;
     wc.hInstance      = GetModuleHandle(0);
@@ -80,8 +80,8 @@ void CtrlMemView::init()
     wc.cbClsExtra     = 0;
 	wc.cbWndExtra     = sizeof( CtrlMemView * );
     wc.hIconSm        = 0;
-	
-	
+
+
     RegisterClassEx(&wc);
 }
 
@@ -101,10 +101,10 @@ LRESULT CALLBACK CtrlMemView::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
     case WM_NCCREATE:
         // Allocate a new CustCtrl structure for this window.
         ccp = new CtrlMemView(hwnd);
-		
+
         // Continue with window creation.
         return ccp != NULL;
-		
+
 		// Clean up when the window is destroyed.
     case WM_NCDESTROY:
         delete ccp;
@@ -116,7 +116,7 @@ LRESULT CALLBACK CtrlMemView::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 		break;
 	case WM_PAINT:
 		ccp->onPaint(wParam,lParam);
-		break;	
+		break;
 	case WM_VSCROLL:
 		ccp->onVScroll(wParam,lParam);
 		break;
@@ -162,7 +162,7 @@ LRESULT CALLBACK CtrlMemView::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
     default:
         break;
     }
-	
+
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
@@ -178,7 +178,7 @@ void CtrlMemView::onPaint(WPARAM wParam, LPARAM lParam)
 	auto memLock = Memory::Lock();
 
 	// draw to a bitmap for double buffering
-	PAINTSTRUCT ps;	
+	PAINTSTRUCT ps;
 	HDC actualHdc = BeginPaint(wnd, &ps);
 	HDC hdc = CreateCompatibleDC(actualHdc);
 	HBITMAP hBM = CreateCompatibleBitmap(actualHdc, rect.right-rect.left, rect.bottom-rect.top);
@@ -197,9 +197,9 @@ void CtrlMemView::onPaint(WPARAM wParam, LPARAM lParam)
 	SelectObject(hdc,standardBrush);
 	Rectangle(hdc,0,0,rect.right,rect.bottom);
 
-	if (displayOffsetScale) 
+	if (displayOffsetScale)
 		drawOffsetScale(hdc);
-	
+
 
 	// draw one extra row that may be partially visible
 	for (int i = 0; i < visibleRows+1; i++)
@@ -209,10 +209,10 @@ void CtrlMemView::onPaint(WPARAM wParam, LPARAM lParam)
 		unsigned int address=windowStart + i*rowSize;
 		int rowY = rowHeight*i;
 
-		if (displayOffsetScale) 
+		if (displayOffsetScale)
 			rowY += rowHeight * offsetSpace; // skip the first X rows to make space for the offsets
-		
-		
+
+
 		sprintf(temp,"%08X",address);
 		SetTextColor(hdc,0x600000);
 		TextOutA(hdc,addressStart,rowY,temp,(int)strlen(temp));
@@ -253,7 +253,7 @@ void CtrlMemView::onPaint(WPARAM wParam, LPARAM lParam)
 					SetBkColor(hdc,0xC0C0C0);
 				}
 				TextOutA(hdc,hexStart+j*3*charWidth,rowY,&temp[0],1);
-							
+
 				if (hasFocus && !asciiSelected)
 				{
 					if (selectedNibble == 1) SelectObject(hdc,(HGDIOBJ)underlineFont);
@@ -284,7 +284,7 @@ void CtrlMemView::onPaint(WPARAM wParam, LPARAM lParam)
 	SelectObject(hdc,oldFont);
 	SelectObject(hdc,oldPen);
 	SelectObject(hdc,oldBrush);
-	
+
 	// copy bitmap to the actual hdc
 	BitBlt(actualHdc,0,0,rect.right,rect.bottom,hdc,0,0,SRCCOPY);
 	DeleteObject(hBM);
@@ -292,7 +292,7 @@ void CtrlMemView::onPaint(WPARAM wParam, LPARAM lParam)
 
 	DeleteObject(standardPen);
 	DeleteObject(standardBrush);
-	
+
 	EndPaint(wnd, &ps);
 }
 
@@ -320,7 +320,7 @@ void CtrlMemView::onVScroll(WPARAM wParam, LPARAM lParam)
 void CtrlMemView::onKeyDown(WPARAM wParam, LPARAM lParam)
 {
 	if (KeyDownAsync(VK_CONTROL))
-	{	
+	{
 		switch (tolower(wParam & 0xFFFF))
 		{
 		case 'g':
@@ -423,12 +423,12 @@ void CtrlMemView::redraw()
 	}
 
 	InvalidateRect(wnd, NULL, FALSE);
-	UpdateWindow(wnd); 
+	UpdateWindow(wnd);
 }
 
 void CtrlMemView::onMouseDown(WPARAM wParam, LPARAM lParam, int button)
-{	
-	int x = LOWORD(lParam); 
+{
+	int x = LOWORD(lParam);
 	int y = HIWORD(lParam);
 
 	gotoPoint(x,y);
@@ -457,7 +457,7 @@ void CtrlMemView::onMouseUp(WPARAM wParam, LPARAM lParam, int button)
 				dump.exec();
 				break;
 			}
-			
+
 		case ID_MEMVIEW_COPYVALUE_8:
 			{
 				auto memLock = Memory::Lock();
@@ -475,7 +475,7 @@ void CtrlMemView::onMouseUp(WPARAM wParam, LPARAM lParam, int button)
 				W32Util::CopyTextToClipboard(wnd,temp);
 			}
 			break;
-			
+
 		case ID_MEMVIEW_COPYVALUE_16:
 			{
 				auto memLock = Memory::Lock();
@@ -485,7 +485,7 @@ void CtrlMemView::onMouseUp(WPARAM wParam, LPARAM lParam, int button)
 				W32Util::CopyTextToClipboard(wnd,temp);
 			}
 			break;
-			
+
 		case ID_MEMVIEW_COPYVALUE_32:
 			{
 				auto memLock = Memory::Lock();
@@ -507,7 +507,7 @@ void CtrlMemView::onMouseUp(WPARAM wParam, LPARAM lParam, int button)
 		return;
 	}
 
-	int x = LOWORD(lParam); 
+	int x = LOWORD(lParam);
 	int y = HIWORD(lParam);
 	ReleaseCapture();
 	gotoPoint(x,y);
@@ -516,7 +516,7 @@ void CtrlMemView::onMouseUp(WPARAM wParam, LPARAM lParam, int button)
 void CtrlMemView::onMouseMove(WPARAM wParam, LPARAM lParam, int button)
 {
 
-}	
+}
 
 void CtrlMemView::updateStatusBarText()
 {
@@ -545,7 +545,7 @@ void CtrlMemView::gotoPoint(int x, int y)
 	{
 		int col = (x-asciiStart) / (charWidth+2);
 		if (col >= rowSize) return;
-		
+
 		asciiSelected = true;
 		curAddress = lineAddress+col;
 		selectedNibble = 0;
@@ -571,7 +571,7 @@ void CtrlMemView::gotoPoint(int x, int y)
 }
 
 void CtrlMemView::gotoAddr(unsigned int addr)
-{	
+{
 	int lines=(rect.bottom/rowHeight);
 	u32 windowEnd = windowStart+lines*rowSize;
 
@@ -614,10 +614,10 @@ void CtrlMemView::scrollCursor(int bytes)
 			selectedNibble = 0;
 			bytes = 0;
 		}
-	} 
+	}
 
 	curAddress += bytes;
-		
+
 	u32 windowEnd = windowStart+visibleRows*rowSize;
 	if (curAddress < windowStart)
 	{
@@ -626,7 +626,7 @@ void CtrlMemView::scrollCursor(int bytes)
 	{
 		windowStart = (curAddress-(visibleRows-1)*rowSize) & ~15;
 	}
-	
+
 	updateStatusBarText();
 	redraw();
 }
@@ -634,27 +634,16 @@ void CtrlMemView::scrollCursor(int bytes)
 
 std::vector<u32> CtrlMemView::searchString(std::string searchQuery)
 {
-<<<<<<< HEAD
-	
-=======
->>>>>>> upstream/master
 	std::vector<u32> searchResAddrs;
 	std::vector<u8> searchData;
 
 	auto memLock = Memory::Lock();
 	if (!PSP_IsInited())
 		return searchResAddrs;
-<<<<<<< HEAD
-	
-	size_t queryLength = searchQuery.length();
-	u32 segmentStart = PSP_GetKernelMemoryBase(); //RAM start 
-	u32 const segmentEnd   = PSP_GetUserMemoryEnd() - queryLength; //RAM end
-=======
 
 	size_t queryLength = searchQuery.length();
-	u32 segmentStart = PSP_GetKernelMemoryBase(); //RAM start 
+	u32 segmentStart = PSP_GetKernelMemoryBase(); //RAM start
 	const u32 segmentEnd = PSP_GetUserMemoryEnd() - (u32)queryLength; //RAM end
->>>>>>> upstream/master
 	u8* ptr;
 
 	redraw();
@@ -670,11 +659,7 @@ std::vector<u32> CtrlMemView::searchString(std::string searchQuery)
 		}
 	};
 	redraw();
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> upstream/master
 	return searchResAddrs;
 };
 
@@ -684,19 +669,11 @@ void CtrlMemView::search(bool continueSearch)
 	if (!PSP_IsInited())
 		return;
 
-<<<<<<< HEAD
-	u32 searchAddress;
-	u32 segmentStart;
-	u32 segmentEnd;
-	u8* dataPointer;
-	if (continueSearch == false || searchQuery[0] == 0)
-=======
 	u32 searchAddress = 0;
 	u32 segmentStart = 0;
 	u32 segmentEnd = 0;
 	u8* dataPointer = 0;
 	if (continueSearch == false || searchQuery.empty())
->>>>>>> upstream/master
 	{
 		if (InputBox_GetString(GetModuleHandle(NULL),wnd,L"Search for", "",searchQuery) == false)
 		{
@@ -750,25 +727,14 @@ void CtrlMemView::search(bool continueSearch)
 	std::vector<std::pair<u32,u32>> memoryAreas;
 	memoryAreas.push_back(std::pair<u32,u32>(0x04000000, 0x04200000));
 	memoryAreas.push_back(std::pair<u32,u32>(0x08000000, 0x0A000000));
-	
+
 	searching = true;
 	redraw();	// so the cursor is disabled
-<<<<<<< HEAD
-	
-
-	
-	for (size_t i = 0; i < memoryAreas.size(); i++)
-	{
-		segmentStart = memoryAreas[i].first;
-		segmentEnd = memoryAreas[i].second;
-		
-=======
 
 	for (size_t i = 0; i < memoryAreas.size(); i++) {
 		segmentStart = memoryAreas[i].first;
 		segmentEnd = memoryAreas[i].second;
 
->>>>>>> upstream/master
 		dataPointer = Memory::GetPointer(segmentStart);
 		if (dataPointer == NULL) continue;		// better safe than sorry, I guess
 
@@ -806,10 +772,10 @@ void CtrlMemView::drawOffsetScale(HDC hdc)
 	SetTextColor(hdc, 0x600000);
 	TextOutA(hdc, currentX, offsetPositionY, "Offset", 6);
 
-	currentX = addressStart + ((8 + 1)*charWidth); // the start offset, the size of the hex addresses and one space 
-	
+	currentX = addressStart + ((8 + 1)*charWidth); // the start offset, the size of the hex addresses and one space
+
 	char temp[64];
-	for (int i = 0; i < 16; i++) 
+	for (int i = 0; i < 16; i++)
 	{
 		sprintf(temp, "%02X", i);
 		TextOutA(hdc, currentX, offsetPositionY, temp, 2);
@@ -819,7 +785,7 @@ void CtrlMemView::drawOffsetScale(HDC hdc)
 
 void CtrlMemView::toggleOffsetScale(CommonToggles toggle)
 {
-	if (toggle == On) 
+	if (toggle == On)
 		displayOffsetScale = true;
 	else if (toggle == Off)
 		displayOffsetScale = false;
