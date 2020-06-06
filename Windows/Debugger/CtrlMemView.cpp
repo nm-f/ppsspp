@@ -634,17 +634,27 @@ void CtrlMemView::scrollCursor(int bytes)
 
 std::vector<u32> CtrlMemView::searchString(std::string searchQuery)
 {
+<<<<<<< HEAD
 	
+=======
+>>>>>>> upstream/master
 	std::vector<u32> searchResAddrs;
 	std::vector<u8> searchData;
 
 	auto memLock = Memory::Lock();
 	if (!PSP_IsInited())
 		return searchResAddrs;
+<<<<<<< HEAD
 	
 	size_t queryLength = searchQuery.length();
 	u32 segmentStart = PSP_GetKernelMemoryBase(); //RAM start 
 	u32 const segmentEnd   = PSP_GetUserMemoryEnd() - queryLength; //RAM end
+=======
+
+	size_t queryLength = searchQuery.length();
+	u32 segmentStart = PSP_GetKernelMemoryBase(); //RAM start 
+	const u32 segmentEnd = PSP_GetUserMemoryEnd() - (u32)queryLength; //RAM end
+>>>>>>> upstream/master
 	u8* ptr;
 
 	redraw();
@@ -660,7 +670,11 @@ std::vector<u32> CtrlMemView::searchString(std::string searchQuery)
 		}
 	};
 	redraw();
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> upstream/master
 	return searchResAddrs;
 };
 
@@ -670,11 +684,19 @@ void CtrlMemView::search(bool continueSearch)
 	if (!PSP_IsInited())
 		return;
 
+<<<<<<< HEAD
 	u32 searchAddress;
 	u32 segmentStart;
 	u32 segmentEnd;
 	u8* dataPointer;
 	if (continueSearch == false || searchQuery[0] == 0)
+=======
+	u32 searchAddress = 0;
+	u32 segmentStart = 0;
+	u32 segmentEnd = 0;
+	u8* dataPointer = 0;
+	if (continueSearch == false || searchQuery.empty())
+>>>>>>> upstream/master
 	{
 		if (InputBox_GetString(GetModuleHandle(NULL),wnd,L"Search for", "",searchQuery) == false)
 		{
@@ -706,7 +728,7 @@ void CtrlMemView::search(bool continueSearch)
 			}
 
 			u8 value = 0;
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 2 && index < searchQuery.size(); i++)
 			{
 				char c = tolower(searchQuery[index++]);
 				if (c >= 'a' && c <= 'f')
@@ -726,11 +748,12 @@ void CtrlMemView::search(bool continueSearch)
 	}
 
 	std::vector<std::pair<u32,u32>> memoryAreas;
-	memoryAreas.push_back(std::pair<u32,u32>(0x04000000,0x04200000));
-	memoryAreas.push_back(std::pair<u32,u32>(0x08000000,0x0A000000));
+	memoryAreas.push_back(std::pair<u32,u32>(0x04000000, 0x04200000));
+	memoryAreas.push_back(std::pair<u32,u32>(0x08000000, 0x0A000000));
 	
 	searching = true;
 	redraw();	// so the cursor is disabled
+<<<<<<< HEAD
 	
 
 	
@@ -739,6 +762,13 @@ void CtrlMemView::search(bool continueSearch)
 		segmentStart = memoryAreas[i].first;
 		segmentEnd = memoryAreas[i].second;
 		
+=======
+
+	for (size_t i = 0; i < memoryAreas.size(); i++) {
+		segmentStart = memoryAreas[i].first;
+		segmentEnd = memoryAreas[i].second;
+
+>>>>>>> upstream/master
 		dataPointer = Memory::GetPointer(segmentStart);
 		if (dataPointer == NULL) continue;		// better safe than sorry, I guess
 
@@ -746,19 +776,15 @@ void CtrlMemView::search(bool continueSearch)
 		if (searchAddress >= segmentEnd) continue;
 
 		int index = searchAddress-segmentStart;
-		int endIndex = segmentEnd-segmentStart-(int)searchData.size();
+		int endIndex = segmentEnd-segmentStart - (int)searchData.size();
 
-		while (index < endIndex)
-		{
+		while (index < endIndex) {
 			// cancel search
-			if ((index % 256) == 0 && KeyDownAsync(VK_ESCAPE))
-			{
+			if ((index % 256) == 0 && KeyDownAsync(VK_ESCAPE)) {
 				searching = false;
 				return;
 			}
-		
-			if (memcmp(&dataPointer[index],searchData.data(),searchData.size()) == 0)
-			{
+			if (memcmp(&dataPointer[index], searchData.data(), searchData.size()) == 0) {
 				matchAddress = index+segmentStart;
 				searching = false;
 				gotoAddr(matchAddress);
@@ -783,14 +809,12 @@ void CtrlMemView::drawOffsetScale(HDC hdc)
 	currentX = addressStart + ((8 + 1)*charWidth); // the start offset, the size of the hex addresses and one space 
 	
 	char temp[64];
-
 	for (int i = 0; i < 16; i++) 
 	{
 		sprintf(temp, "%02X", i);
 		TextOutA(hdc, currentX, offsetPositionY, temp, 2);
 		currentX += 3 * charWidth; // hex and space
 	}
-
 }
 
 void CtrlMemView::toggleOffsetScale(CommonToggles toggle)

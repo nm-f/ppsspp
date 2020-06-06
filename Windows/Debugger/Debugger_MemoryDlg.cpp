@@ -102,13 +102,21 @@ void CMemoryDlg::Update(void)
 }
 
 void CMemoryDlg::searchBoxRedraw(std::vector<u32> results) {
+<<<<<<< HEAD
 	int index;
 	wchar_t temp[256];
+=======
+	wchar_t temp[256]{};
+>>>>>>> upstream/master
 	SendMessage(srcListHdl, WM_SETREDRAW, FALSE, 0);
 	ListBox_ResetContent(srcListHdl);
 	for (int i = 0; i < results.size(); i++) {
 		wsprintf(temp, L"0x%08X", results[i]);
+<<<<<<< HEAD
 		index = (int)ListBox_AddString(srcListHdl,temp);
+=======
+		int index = (int)ListBox_AddString(srcListHdl, temp);
+>>>>>>> upstream/master
 		ListBox_SetItemData(srcListHdl, index, results[i]);
 	}
    	SendMessage(srcListHdl, WM_SETREDRAW, TRUE, 0);
@@ -120,12 +128,18 @@ void CMemoryDlg::NotifyMapLoaded()
 {
 	if (m_hDlg)
 	{
+<<<<<<< HEAD
 
 		if (g_symbolMap)
 			g_symbolMap->FillSymbolListBox(symListHdl, ST_DATA);
 		int sel = ComboBox_GetCurSel(memViewHdl);
 		ComboBox_ResetContent(memViewHdl);
 
+=======
+		g_symbolMap->FillSymbolListBox(symListHdl,ST_DATA);
+		int sel = ComboBox_GetCurSel(memViewHdl);
+		ComboBox_ResetContent(memViewHdl);
+>>>>>>> upstream/master
     /*
 		for (int i = 0; i < cpu->getMemMap()->numRegions; i++)
 		{
@@ -142,6 +156,7 @@ BOOL CMemoryDlg::DlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch(message){
 	case WM_COMMAND:{
+<<<<<<< HEAD
 		HWND lb = GetDlgItem(m_hDlg, LOWORD(wParam)); 
 		switch (LOWORD(wParam)){
 		case IDC_REGIONS:
@@ -149,6 +164,15 @@ BOOL CMemoryDlg::DlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 				case LBN_DBLCLK:{
 					int n = ComboBox_GetCurSel(lb);
 					if (n!=-1){
+=======
+		HWND lb = GetDlgItem(m_hDlg, LOWORD(wParam));
+		switch (LOWORD(wParam)){
+		case IDC_REGIONS:
+			switch (HIWORD(wParam)) {
+				case LBN_DBLCLK:{
+					int n = ComboBox_GetCurSel(lb);
+					if (n != -1) {
+>>>>>>> upstream/master
 						unsigned int addr = (unsigned int)ComboBox_GetItemData(lb,n);
 						memView->gotoAddr(addr);
 					}
@@ -160,7 +184,11 @@ BOOL CMemoryDlg::DlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 			switch (HIWORD(wParam)) { 
 				case LBN_DBLCLK:{
 					int n = ListBox_GetCurSel(lb);
+<<<<<<< HEAD
 					if (n!=-1)	{
+=======
+					if (n != -1) {
+>>>>>>> upstream/master
 						unsigned int addr = (unsigned int)ListBox_GetItemData(lb,n);
 						memView->gotoAddr(addr);
 					}
