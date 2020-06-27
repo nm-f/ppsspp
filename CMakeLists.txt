@@ -166,7 +166,7 @@ endif()
 
 include_directories(ext/native)
 
-# Work around for some misfeature of the current glslang build system 
+# Work around for some misfeature of the current glslang build system
 include_directories(ext/glslang)
 
 
@@ -790,6 +790,8 @@ elseif(USING_QT_UI)
 		Qt/QtHost.h
 		Qt/mainwindow.cpp
 		Qt/mainwindow.h
+		Qt/memwindow.cpp
+		Qt/memwindow.h
 	)
 	add_definitions(-DUSING_QT_UI)
 	if(USING_GLES2)

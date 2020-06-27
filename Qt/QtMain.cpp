@@ -287,6 +287,10 @@ static int mainInternal(QApplication &a) {
 	browseFileEvent = QEvent::registerEventType();
 	browseFolderEvent = QEvent::registerEventType();
 
+    QWidget window;
+    window.resize(320, 240);
+    window.show();
+
 	int retval = a.exec();
 	delete emugl;
 	return retval;

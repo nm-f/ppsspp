@@ -39,10 +39,14 @@ MainWindow::MainWindow(QWidget *parent, bool fullscreen) :
 	createMenus();
 	updateMenus();
 
+
+    
+
 	SetFullScreen(fullscreen);
 
 	QObject::connect(emugl, SIGNAL(doubleClick()), this, SLOT(fullscrAct()));
 	QObject::connect(emugl, SIGNAL(newFrame()), this, SLOT(newFrame()));
+
 }
 
 inline float clamp1(float x) {
@@ -284,6 +288,17 @@ void MainWindow::lmapAct()
 		g_symbolMap->LoadSymbolMap(fileName.toStdString().c_str());
 	}
 }
+
+//void MainWindow::memAct()
+//{
+//    window = new QWidget(this,Qt::Window);
+//    window.resize(320, 240);
+//    window.show();
+//    window.setWindowTitle(
+//            QApplication::translate("toplevel", "Top-level widget"));
+//
+//}
+
 
 void MainWindow::smapAct()
 {
@@ -580,6 +595,10 @@ void MainWindow::createMenus()
 	debugMenu->addSeparator();
 	debugMenu->add(new MenuAction(this, SLOT(consoleAct()),   QT_TR_NOOP("&Log console"), Qt::CTRL + Qt::Key_L))
 		->addDisableState(UISTATE_MENU);
+    debugMenu->addSeparator();
+    debugMenu->add(new MenuAction(this, SLOT(memAct()),   QT_TR_NOOP("&Memory View"), Qt::CTRL + Qt::Key_M))
+        ->addDisableState(UISTATE_MENU);
+
 
 	// Game settings
 	MenuTree* gameSettingsMenu = new MenuTree(this, menuBar(), QT_TR_NOOP("&Game settings"));

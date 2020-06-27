@@ -229,6 +229,8 @@ private:
 
 	std::string newWindowTitle_;
 	std::mutex titleMutex_;
+
+	void memAct();
 };
 
 class MenuAction : public QAction
