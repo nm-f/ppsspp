@@ -41,6 +41,9 @@
 #include "Core/HW/Camera.h"
 
 #include <string.h>
+#include <QLabel>
+#include <QScrollArea>
+#include "memwindow.h"
 
 MainUI *emugl = nullptr;
 static float refreshRate = 60.f;
@@ -287,10 +290,6 @@ static int mainInternal(QApplication &a) {
 	browseFileEvent = QEvent::registerEventType();
 	browseFolderEvent = QEvent::registerEventType();
 
-    QWidget window;
-    window.resize(320, 240);
-    window.show();
-
 	int retval = a.exec();
 	delete emugl;
 	return retval;
@@ -328,8 +327,7 @@ void MainUI::EmuThreadJoin() {
 	emuThread = std::thread();
 }
 
-MainUI::MainUI(QWidget *parent)
-	: QGLWidget(parent) {
+MainUI::MainUI(QWidget *parent): QGLWidget(parent) {
 	emuThreadState = (int)EmuThreadState::DISABLED;
 	setAttribute(Qt::WA_AcceptTouchEvents);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)

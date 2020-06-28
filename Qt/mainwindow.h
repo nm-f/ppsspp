@@ -13,6 +13,7 @@
 #include "Core/Config.h"
 #include "Core/System.h"
 #include "Qt/QtMain.h"
+#include "memwindow.h"
 
 extern bool g_TakeScreenshot;
 
@@ -57,7 +58,12 @@ public:
 	}
 
 protected:
-	void changeEvent(QEvent *e)
+    MemWindow * memWindow = nullptr;
+public:
+    void setMemWindow(MemWindow *memWindow);
+
+protected:
+    void changeEvent(QEvent *e)
 	{
 		QMainWindow::changeEvent(e);
 		// Does not work on Linux for Qt5.2 or Qt5.3 (Qt bug)
@@ -109,6 +115,7 @@ private slots:
 	void dumpNextAct();
 	void takeScreen() { g_TakeScreenshot = true; }
 	void consoleAct();
+    void memAct();
 
 	// Game settings
 	void languageAct() { NativeMessageReceived("language screen", ""); }
@@ -230,7 +237,7 @@ private:
 	std::string newWindowTitle_;
 	std::mutex titleMutex_;
 
-	void memAct();
+
 };
 
 class MenuAction : public QAction

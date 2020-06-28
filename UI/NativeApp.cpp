@@ -135,6 +135,8 @@ Atlas g_ui_atlas;
 #include "ios/iOSCoreAudio.h"
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
+#include <Qt/memwindow.h>
+
 #endif
 
 // https://github.com/richq/android-ndk-profiler
@@ -743,7 +745,9 @@ void NativeInit(int argc, const char *argv[], const char *savegame_dir, const ch
 	isOuya = KeyMap::IsOuya(sysName);
 
 #if !defined(MOBILE_DEVICE) && defined(USING_QT_UI)
-	MainWindow *mainWindow = new MainWindow(nullptr, g_Config.bFullScreen);
+	auto *mainWindow = new MainWindow(nullptr, g_Config.bFullScreen);
+    auto *memView = new MemWindow();
+    mainWindow->setMemWindow(memView);
 	mainWindow->show();
 	if (host == nullptr) {
 		host = new QtHost(mainWindow);

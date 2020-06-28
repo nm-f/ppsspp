@@ -289,15 +289,12 @@ void MainWindow::lmapAct()
 	}
 }
 
-//void MainWindow::memAct()
-//{
-//    window = new QWidget(this,Qt::Window);
-//    window.resize(320, 240);
-//    window.show();
-//    window.setWindowTitle(
-//            QApplication::translate("toplevel", "Top-level widget"));
-//
-//}
+void MainWindow::memAct()
+{
+    if (memWindow != nullptr){
+        memWindow->toggleVisible();
+    }
+}
 
 
 void MainWindow::smapAct()
@@ -685,4 +682,8 @@ void MainWindow::createMenus()
 	helpMenu->add(new MenuAction(this, SLOT(aboutAct()),      QT_TR_NOOP("&About PPSSPP...")));
 
 	retranslate();
+}
+
+void MainWindow::setMemWindow(MemWindow *memWindow) {
+    MainWindow::memWindow = memWindow;
 }

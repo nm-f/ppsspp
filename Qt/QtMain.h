@@ -58,7 +58,7 @@ public:
 		_assert_msg_(G3D, success, "Failed to compile preset shaders");
 	}
 
-	~QtGLGraphicsContext() {
+	~QtGLGraphicsContext() override {
 		delete draw_;
 		draw_ = nullptr;
 		renderManager_ = nullptr;
@@ -112,7 +112,7 @@ public:
 	explicit MainUI(QWidget *parent = 0);
 	~MainUI();
 
-	void resizeGL(int w, int h);
+	void resizeGL(int w, int h) override;
 
 public slots:
 	QString InputBoxGetQString(QString title, QString defaultValue);
@@ -122,12 +122,12 @@ signals:
 	void newFrame();
 
 protected:
-	void timerEvent(QTimerEvent *);
-	void changeEvent(QEvent *e);
-	bool event(QEvent *e);
+	void timerEvent(QTimerEvent *) override;
+	void changeEvent(QEvent *e) override;
+	bool event(QEvent *e) override;
 
-	void initializeGL();
-	void paintGL();
+	void initializeGL() override;
+	void paintGL() override;
 
 	void updateAccelerometer();
 

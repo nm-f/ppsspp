@@ -116,3 +116,8 @@ debian/ppsspp/
 
 # RenderDoc
 *.rdc
+
+#cmake in clion
+cmake-build-debug-qt/
+cmake-build-debug/
+cmake-build-release/
